@@ -31,7 +31,7 @@ var Passo2Layer = cc.Layer.extend({
 		
 		this.world.Step(dt, velocityIterations, positionIterations);
 
-        console.log(this.playerBody.GetPosition().y);
+        this.playerSprite.setPosition(cc.pMult(this.playerBody.GetPosition(),30));
     },
     initBox2DWorld: function(){
 
@@ -58,6 +58,7 @@ var Passo2Layer = cc.Layer.extend({
         var bodyDef = new b2BodyDef();
         bodyDef.type = b2Body.b2_dynamicBody;
         bodyDef.position.Set(10,10);
+        bodyDef.userData = this.playerSprite;
 
         var body = this.world.CreateBody(bodyDef);
 
