@@ -1,4 +1,4 @@
-
+PTM_RATIO  = 30;
 var Passo2Layer = cc.Layer.extend({
 	playerSprite: null,   
 	playerBody: null,
@@ -31,7 +31,17 @@ var Passo2Layer = cc.Layer.extend({
 		
 		this.world.Step(dt, velocityIterations, positionIterations);
 
-        this.playerSprite.setPosition(cc.pMult(this.playerBody.GetPosition(),30));
+
+        for (var b = this.world.GetBodyList(); b; b = b.GetNext()) {
+
+            if (b.GetUserData() != null) {
+
+                var currentSprite = b.GetUserData();
+                currentSprite.setPosition(cc.p(b.GetPosition().x * PTM_RATIO, b.GetPosition().y * PTM_RATIO));
+                currentSprite.setRotation(-1 * cc.RADIANS_TO_DEGREES(b.GetAngle()));
+            
+            }
+        }
     },
     initBox2DWorld: function(){
 
@@ -54,11 +64,31 @@ var Passo2Layer = cc.Layer.extend({
             , b2FixtureDef = Box2D.Dynamics.b2FixtureDef
             , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
             , b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
+      
+       //definições do body
+        var bodyDef = new b2BodyDef();
+        bodyDef.type = b2Body.b2_dynamicBody;
+        bodyDef.position.Set(12,5);
+        bodyDef.userData = cc.Sprite.create("../../img/box.png");
+
+        this.addChild(bodyDef.userData);
+
+        var body = this.world.CreateBody(bodyDef);
+
+        //definições da fixture
+        var fixtureDef = new b2FixtureDef();
+        fixtureDef.shape = new b2PolygonShape();
+        fixtureDef.shape.SetAsBox(3,3);
+        fixtureDef.density = 1.0;
+        fixtureDef.friction = 0.3;
+        fixtureDef.restitution = 0.9;
+        body.CreateFixture(fixtureDef);
+
 
         //definições do body
         var bodyDef = new b2BodyDef();
         bodyDef.type = b2Body.b2_dynamicBody;
-        bodyDef.position.Set(10,10);
+        bodyDef.position.Set(10,15);
         bodyDef.userData = this.playerSprite;
 
         var body = this.world.CreateBody(bodyDef);
@@ -66,7 +96,7 @@ var Passo2Layer = cc.Layer.extend({
         //definições da fixture
         var fixtureDef = new b2FixtureDef();
         fixtureDef.shape = new b2CircleShape();
-        fixtureDef.shape.SetRadius(1);
+        fixtureDef.shape.SetRadius(3);
         fixtureDef.density = 1.0;
         fixtureDef.friction = 0.3;
         fixtureDef.restitution = 0.9;
