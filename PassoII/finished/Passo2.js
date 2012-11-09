@@ -30,6 +30,8 @@ var Passo2Layer = cc.Layer.extend({
         var positionIterations = 1;
 		
 		this.world.Step(dt, velocityIterations, positionIterations);
+
+        console.log(this.playerBody.GetPosition().y);
     },
     initBox2DWorld: function(){
 
@@ -45,6 +47,30 @@ var Passo2Layer = cc.Layer.extend({
         //cria o b2World
      	this.world = new b2World(new b2Vec2(0, -10), true);
         this.world.SetContinuousPhysics(true);
+
+        //cria um body
+         var b2BodyDef = Box2D.Dynamics.b2BodyDef
+            , b2Body = Box2D.Dynamics.b2Body
+            , b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+            , b2PolygonShape = Box2D.Collision.Shapes.b2CircleShape;
+
+        //definições do body
+        var bodyDef = new b2BodyDef();
+        bodyDef.type = b2Body.b2_dynamicBody;
+        bodyDef.position.Set(10,10);
+
+        var body = this.world.CreateBody(bodyDef);
+
+        //definições da fixture
+        var fixtureDef = new b2FixtureDef();
+        fixtureDef.shape = new b2CircleShape();
+        fixtureDef.shape.SetRadius(1);
+        fixtureDef.density = 1.0;
+        fixtureDef.friction = 0.3;
+        body.CreateFixture(fixtureDef);
+
+        this.playerBody = body;
+
     },
     createGround: function(size){
 
