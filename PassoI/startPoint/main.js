@@ -1,5 +1,7 @@
 var cocos2dApp = cc.Application.extend({
+    
     config:document.querySelector('#cocos2d-html5')['c'],
+    
     ctor:function (scene) {
         
         this._super();
@@ -7,6 +9,7 @@ var cocos2dApp = cc.Application.extend({
         this.startScene = scene;
         
         cc.setup(this.config['tag']);
+
 
         cc.Loader.shareLoader().onloading = function () {
             cc.LoaderScene.shareLoaderScene().draw();
@@ -18,7 +21,9 @@ var cocos2dApp = cc.Application.extend({
 
         cc.Loader.shareLoader().preload([
         ]);
+
     },
+    
     applicationDidFinishLaunching:function () {
         
         var director = cc.Director.getInstance();

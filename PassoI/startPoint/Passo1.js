@@ -12,9 +12,13 @@ var Passo1Layer = cc.Layer.extend({
 
 Passo1Scene = cc.Scene.extend({
 	onEnter:function(){
+		
 		this._super();
+
 		var layer = new Passo1Layer();
+
 		layer.init();
+
 		this.addChild(layer);
 	}
 })
