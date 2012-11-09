@@ -52,7 +52,8 @@ var Passo2Layer = cc.Layer.extend({
          var b2BodyDef = Box2D.Dynamics.b2BodyDef
             , b2Body = Box2D.Dynamics.b2Body
             , b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-            , b2PolygonShape = Box2D.Collision.Shapes.b2CircleShape;
+            , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+            , b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 
         //definições do body
         var bodyDef = new b2BodyDef();
@@ -68,9 +69,28 @@ var Passo2Layer = cc.Layer.extend({
         fixtureDef.shape.SetRadius(1);
         fixtureDef.density = 1.0;
         fixtureDef.friction = 0.3;
+        fixtureDef.restitution = 0.9;
         body.CreateFixture(fixtureDef);
 
         this.playerBody = body;
+
+        //cria um body statico
+
+        //definições do body
+        var staticBodyDef = new b2BodyDef();
+        staticBodyDef.type = b2Body.b2_staticBody;
+        staticBodyDef.position.Set(10,0);
+
+        //definições da fixture
+        var staticFixtureDef = new b2FixtureDef();
+        staticFixtureDef.shape = new b2PolygonShape();
+        staticFixtureDef.shape.SetAsBox(20,1);
+        staticFixtureDef.density = 1.0;
+        staticFixtureDef.friction = 0.3;
+
+        this.world.CreateBody(staticBodyDef).CreateFixture(staticFixtureDef);
+
+        
 
     },
     createGround: function(size){
