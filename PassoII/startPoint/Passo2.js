@@ -1,5 +1,8 @@
 
-var Passo2Layer = cc.Layer.extend({   
+var Passo2Layer = cc.Layer.extend({
+	playerSprite: null,   
+	playerBody: null,
+	wordl: null,
     ctor:function(){
     	
     	
@@ -11,17 +14,37 @@ var Passo2Layer = cc.Layer.extend({
         this.addChild(label);
 
         //Adicionando Sprite
-        var sprite = cc.Sprite.create("../../img/carcara.png");
+        this.playerSprite = cc.Sprite.create("../../img/carcara.png");
 
-        sprite.setPosition( cc.p( 300, 250 ) );
+        this.addChild(this.playerSprite);
 
-        this.addChild(sprite);
+        // Box2D
+        this.initBox2DWorld();
 
-        //Manipulando o Sprite
-        sprite.schedule(function(){
+        this.scheduleUpdate();
 
-	        this.setRotation( this.getRotation() + 3);
-        });
+    },
+    update: function(dt){
+    	
+    	var velocityIterations = 8;
+        var positionIterations = 1;
+		
+		this.world.Step(dt, velocityIterations, positionIterations);
+    },
+    initBox2DWorld: function(){
+
+        var b2Vec2          = Box2D.Common.Math.b2Vec2
+        , b2BodyDef         = Box2D.Dynamics.b2BodyDef
+        , b2Body            = Box2D.Dynamics.b2Body
+        , b2FixtureDef      = Box2D.Dynamics.b2FixtureDef
+        , b2World           = Box2D.Dynamics.b2World
+        , b2PolygonShape    = Box2D.Collision.Shapes.b2PolygonShape
+        , b2CircleShape     = Box2D.Collision.Shapes.b2CircleShape
+        , b2DebugDraw       = Box2D.Dynamics.b2DebugDraw;
+
+        //cria o b2World
+     	this.world = new b2World(new b2Vec2(0, -10), true);
+        this.world.SetContinuousPhysics(true);
     }
 });
 
