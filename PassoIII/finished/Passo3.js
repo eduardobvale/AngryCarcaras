@@ -2,25 +2,29 @@ PTM_RATIO = 30;
 var Passo3Layer = cc.Layer.extend({
 	world: null,
     carcara: null,
+    preparingToShoot: false,
+    hasShot: false,
     ctor:function(){
 
         // Box2D
         this.initBox2DWorld();
 
-        var carcaraBody = Box2DHelper.CreateDynamicCircle(this.world,cc.p(2,2),cc.p(2,2));
+        var carcaraBody = Box2DHelper.CreateDynamicCircle(this.world,cc.p(8,4),cc.p(2,2));
+        carcaraBody.SetActive(false);
         this.carcara = new Carcara(carcaraBody);
         this.addChild(this.carcara);
 
-        // Criando Limites
-        Box2DHelper.CreateStaticBox(this.world,cc.p(10,0),cc.p(20,0.5));
-        Box2DHelper.CreateStaticBox(this.world,cc.p(0,0),cc.p(0.5,20));
-        
+       
         //Botao Replay
         this.incluirBotaoReplay();
 
-        this.scheduleUpdate();
+        this.criarLimites();
 
-        //TODO criar caixas e atirar o carcara
+        this.inserirCaixas();
+
+        this.setTouchEnabled(true);
+
+        this.scheduleUpdate();
 
     },
     update: function(dt){
@@ -40,6 +44,34 @@ var Passo3Layer = cc.Layer.extend({
             
             }
         }
+    },
+    onTouchesMoved:function(pTouch,pEvent){
+        if(this.preparingToShoot){
+            this.carcara.body.SetActive(false);
+            this.carcara.handleTouchMove(pTouch[0].getLocation());
+        }
+    },
+    onTouchesEnded:function (pTouch,pEvent){
+        if(this.preparingToShoot)
+            this.carcara.handleTouch(pTouch[0].getLocation());
+        this.hasShot = true;
+        this.preparingToShoot = false;
+    },
+    onTouchesBegan:function (pTouch,pEvent){
+        if(this.hasShot == false)
+            this.preparingToShoot = true;
+    },
+    inserirCaixas: function(){
+
+        var sideCaixa = (78/PTM_RATIO);
+
+        for (var j = 1; j < 5; j++) {
+            
+            var bodyCaixa = Box2DHelper.CreateDynamicBox(this.world, cc.p(25, j*sideCaixa + j), cc.p(sideCaixa,sideCaixa));
+
+            this.addChild( new Caixa(bodyCaixa));           
+        };
+
     },
     initBox2DWorld: function(){
 
@@ -66,8 +98,21 @@ var Passo3Layer = cc.Layer.extend({
 
         var menu = cc.Menu.create(menuitem);
 
-        menu.setPosition( cc.p( 530, 450 ) );
+        menu.setPosition( cc.p( 830, 450 ) );
         this.addChild(menu,1,2);
+    },
+    criarLimites: function(){
+         // Criando Limites
+        var sSize = cc.Director.getInstance().getWinSize();
+        var sSizeMeters = { width: sSize.width/PTM_RATIO, height: sSize.height/PTM_RATIO };
+
+        
+        Box2DHelper.CreateStaticBox(this.world,cc.p(sSizeMeters.width,40/PTM_RATIO),cc.p(60,3));
+        Box2DHelper.CreateStaticBox(this.world,cc.p(sSizeMeters.width,sSizeMeters.height),cc.p(60,0.5));
+        
+        Box2DHelper.CreateStaticBox(this.world,cc.p(0,sSizeMeters.height/2),cc.p(0.5,sSizeMeters.height));
+        Box2DHelper.CreateStaticBox(this.world,cc.p(sSizeMeters.width,sSizeMeters.height/2),cc.p(0.5,sSizeMeters.height));
+        
     }
 });
 
@@ -83,7 +128,7 @@ Passo3Scene = cc.Scene.extend({
 
 		var backgroundSprite = cc.Sprite.create("../../img/bg.png");
 
-		backgroundSprite.setPosition(cc.p(300,250));
+		backgroundSprite.setPosition(cc.p(450,250));
 
 		lazyLayer.addChild(backgroundSprite, 0);
 
