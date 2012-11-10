@@ -59,13 +59,8 @@ var Passo2Layer = cc.Layer.extend({
         this.world.SetContinuousPhysics(true);
 
         //cria um body
-         var b2BodyDef = Box2D.Dynamics.b2BodyDef
-            , b2Body = Box2D.Dynamics.b2Body
-            , b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-            , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
-            , b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
       
-       //definições do body
+        //definições do body
         var bodyDef = new b2BodyDef();
         bodyDef.type = b2Body.b2_dynamicBody;
         bodyDef.position.Set(12,5);

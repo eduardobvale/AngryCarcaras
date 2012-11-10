@@ -48,11 +48,6 @@ Passo1Scene = cc.Scene.extend({
 		layer.init();
 
 		this.addChild(layer);
-
-
-
-		
-
 	}
 })
 
