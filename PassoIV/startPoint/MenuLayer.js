@@ -1,6 +1,7 @@
-
 var MenuLayer = cc.Layer.extend({   
     ctor:function(){
+
+	this.setTouchEnabled(true)
     	
     	var label = cc.LabelTTF.create( "Angry Carcarás", "Helvetica", 64 );
 
